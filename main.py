@@ -1,9 +1,9 @@
 
 '''
-this is a test
-1. generate a population of network structures.
-2. train them to associate a given pattern.
-3. evolve them to associate a second pattern.
+this is the main function of schema.
+1. generate a population of graphs, inputs, outputs and expected fitness.
+2. evolve population to equilibrium, test it for the new coupled pattern of EFs.
+3. build graphs of the final results.
 '''
 
 def main():
@@ -18,7 +18,6 @@ def main():
     results = evolver(population)
     
     # 4. saving results
-    resultsWriter(results)
+    graphsBuilder(results)
     
-
     return None
