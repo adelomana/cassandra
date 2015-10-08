@@ -1,7 +1,7 @@
 # schema
 Tools for the study of the impact of network structure to the association of novel coupled environmental factors.    
 
-1. first we generate a set of graphs.  
+1. first we generate a set of graphs. Each graph is boolean network.
 2. Each graph is a Boolean network.   
 3. There must be a set of signals. Each node reads or not, randomly a given signal.  
 4. Define for all population which node is "reader", which one is "responder". They should be the same for the whole population.  
