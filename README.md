@@ -1,5 +1,5 @@
-# schema
-tools for the study of the impact of network structure to the association of novel coupled environmental factors.    
+# cassandra
+Computational tool for the study of adaptive prediction emergence.  
 
 1. define a set of n graphs. each graph is boolean network. activations and repressions are random and uniform.
 2. define a set of m inputs and outputs. the number of inputs equals the number of outputs equals the number of nodes.  
