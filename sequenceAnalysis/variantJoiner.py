@@ -1,113 +1,8 @@
-### reads the mutations of breseq, GATK and varscan. It selects for 0.2 to call it a mutation. Quantifies how many mutations are called by each one (bar graph) at the level of SNPs and indels. Prints a list with all the variants by priority (based on number of callers recovering the variant.
+### this script recovers all mutations from 3 different callers
 
 import sys
+sys.path.append('lib')
 import breseqReader,GATKreader,varscanReader
-
-def isIncreasingVariant(variant,filtredVariants2,variants):
-
-    listOfSelectedVariants=[]
-    tubeCorrespondance={}
-    tubeCorrespondance['exp1']=['A2','B','D']
-    tubeCorrespondance['exp2']=['E2','F','G']
-    tubeCorrespondance['exp3']=['H2','I']
-    tubeCorrespondance['exp4']=['J2','K']
-    tubeCorrespondance['exp5']=['L','M']
-    variantTube=variant[1]
-    variantFreq=variant[6]
-    positiveTubes=[tubeCorrespondance[element][1] for element in tubeCorrespondance.keys()]
-    lostTubes=['D','G']
-
-    # 1. recovering variants increasing at AP+
-    #print 'checking variants increasing in AP+...'
-    
-    # check that is a variant in AP+
-    if variantTube in positiveTubes:
-        #print variant
-        # find the n0 tube
-        n0tube=''
-        for key in tubeCorrespondance.keys():
-            if variantTube in tubeCorrespondance[key]:
-                n0tube=tubeCorrespondance[key][0]
-                workingTrajectory=key
-        if n0tube == '':
-            print 'error from isIncreasingVariant at n0Tube'
-            sys.exit()
-        #print n0tube
-        # find the mutation at n0
-        found=False
-        toMatch=[variant[0],n0tube,variant[2],variant[3],variant[4],variant[5],variant[-2]] # vartype,tube,chr,pos,ref,alt,caller
-        for putative in variants: # it should be variants, this is important to check that there is truly an increase of 0.2
-            putativeMatch=[putative[0],putative[1],putative[2],putative[3],putative[4],putative[5],putative[-2]]
-            if toMatch == putativeMatch:
-                #print 'almost found but need to check freq',putativeMatch
-                #print putative
-                #print variant
-                diff=variantFreq-putative[6] # putative[6] is the freq at n0
-                #print diff,variantFreq,putative[6]
-                if isinstance(diff, float) == False:
-                    print 'error'
-                    sys.exit()
-                if diff < increaseThreshold:
-                    found=True
-        #print found
-
-        # recover the variants of the experiment if no variant is found at n0
-        if found == False and variantFreq > increaseThreshold:
-            possibleTubes=tubeCorrespondance[workingTrajectory]
-            #print possibleTubes
-            toMatch=[variant[0],variant[2],variant[3],variant[4],variant[5],variant[-2]] # vartype,chr,pos,ref,alt,caller
-            for putative in filtredVariants2:
-                putativeMatch=[putative[0],putative[2],putative[3],putative[4],putative[5],putative[-2]]
-                if toMatch == putativeMatch:
-                    if putative[1] in possibleTubes:
-                        listOfSelectedVariants.append(putative)
-                        #print 'appending...'
-                        #print putative
-
-    # 2. recovering variants changing between AP+ and AP-: if there is an increase ==> general resistance; if decrease ==> causal of lost of AP
-    #print 'checking variants changing between AP+ and AP-...'
-    # check that is a variant in AP lost
-    if variantTube in lostTubes:
-
-        # find the previous tube
-        if variantTube == 'D':
-            previousTube='B'
-            workingTrajectory='exp1'
-        elif variantTube == 'G':
-            previousTube='F'
-            workingTrajectory='exp2'
-        else:
-            print 'error from isIncreasingVariant at previous tube recovering'
-        #print '\t second',previousTube
-        # find the mutation in that previous tube. define if it increased or decreased increaseThreshold.
-        toRetrieve=False
-        toMatch=[variant[0],previousTube,variant[2],variant[3],variant[4],variant[5],variant[-2]] # vartype,tube,chr,pos,ref,alt,caller
-        for putative in filtredVariants2:
-            putativeMatch=[putative[0],putative[1],putative[2],putative[3],putative[4],putative[5],putative[-2]]
-            if toMatch == putativeMatch:
-                #print '\t second',' almost found but need to check freq',putativeMatch
-                #print '\t second',putative
-                #print '\t second',variant
-                diff=abs(variantFreq-putative[6]) # putative[6] is the freq at the previous tube
-                if diff > increaseThreshold:
-                    toRetrieve=True
-        #print '***! second',toRetrieve
-
-        # recover all variants of the experiment if they increased or decreased 0.20.
-        if toRetrieve == True:
-            possibleTubes=tubeCorrespondance[workingTrajectory]
-            #print '***! second',possibleTubes
-            toMatch=[variant[0],variant[2],variant[3],variant[4],variant[5],variant[-2]] # vartype,chr,pos,ref,alt,caller
-            for putative in filtredVariants2:
-                putativeMatch=[putative[0],putative[2],putative[3],putative[4],putative[5],putative[-2]]
-                if toMatch == putativeMatch:
-                    if putative[1] in possibleTubes:
-                        listOfSelectedVariants.append(putative)
-                        #print '***!',putative
-       
-    #print
-
-    return listOfSelectedVariants
 
 def isAnnotationVariant(variant,filtredVariants1):
 
@@ -197,16 +92,17 @@ for variant in filtredVariants2:
     loc=variant[:4]
     locations.append(loc)
 
-# create a list of positions that have at least two counts. make it unique list
+# create a list of positions that have at least one counts. make it unique list
 selectedLocations=[]
 for location in locations:
-    if locations.count(location) >= 2:
+    if locations.count(location) >= 1:
         selectedLocations.append(location)
 uniqueSelectedLocations=list(set(selectedLocations))
 
-print 'detected %s unique variant from at least 2 callers...'%len(uniqueSelectedLocations)
+print 'detected %s unique variant from at least 1 callers...'%len(uniqueSelectedLocations)
 
-# create a list with variants of the
+# create a list with variants of the unique locations
+filtredVariants3=[]
 for location in uniqueSelectedLocations:
     for variant in filtredVariants2:
         if location == variant[:4]:
