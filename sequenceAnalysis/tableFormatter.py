@@ -12,45 +12,26 @@ def annotationReader(sysName):
 
     found=False
 
-    infoFile='annotation.txt'
+    # reading annotation
+    infoFile='annotation.2.txt'
     with open(infoFile,'r') as f:
         f.next()
         for line in f:
             vector=line.split('\t')
             if vector[1] == sysName:
                 found=True
-                geneName=vector[3]
-                if geneName == '':
+                if vector[3] != '':
+                    geneName=vector[3]
+                else:
                     geneName=sysName
-                geneFunction=vector[4].replace('\n','')
+                geneFunction=vector[4].replace('\n','').split(';')[0]
 
+    # making sure annotation is retrieved
     if found == False:
-        print sysName
         print 'annotation not found. exiting...'
         sys.exit()
 
-    if geneName == '':
-        print sysName
-        sys.exit()
-
     return geneName,geneFunction
-
-def dubiousGenesRemover(geneName,geneFunction):
-
-    '''
-    this function flags down dubious genes
-    '''
-
-    flag=True
-
-    if geneName == 'tL(UAA)N':
-        flag=False
-
-    vector=geneFunction.split()
-    if vector[:3] == ['Dubious', 'open', 'reading']:
-        flag=False
-    
-    return flag
 
 def geneInfoRetriever(uLoc):
 
@@ -59,13 +40,24 @@ def geneInfoRetriever(uLoc):
     '''
 
     found=False
+    #print uLoc
     for variant in allVariants:
         putative=(variant[0],variant[2],variant[3])
         if uLoc == putative:
             found=True
+            #print variant
+            #print
             sysName=variant[7]
+            if '_CDS' in sysName:
+                sysName=sysName.split('_CDS')[0]
+            if '_BY4741' in sysName:
+                sysName=sysName.split('_BY4741')[0]
+                
             mutation='|'.join((variant[4],variant[5]))
+
             effect=variant[11]
+            if 'aaChange' in effect:
+                effect=variant[11].split('_')[1]
             break
 
     if found == False:
@@ -79,7 +71,7 @@ def geneInfoRetriever(uLoc):
     return geneName,geneFunction,mutation,effect
 
 # 0. user defined variables
-outputFile='formattedTable.80.txt'
+outputFile='formattedTable.305.txt'
 
 experimentLabels={}
 experimentLabels['exp1']='E2'
@@ -95,10 +87,12 @@ print 'recovering data...'
 
 # 1.1. recovering changing variants...
 print 
-jar='changingVariants.80.pckl'
+jar='changingVariants.305.pckl'
 f=open(jar,'r')
 [tested_experiments,tested_positions,tested_observedFrequencies,rejected_corrected,tested_statistics,pValues_corrected]=pickle.load(f)
 f.close()
+
+print '%s variants recovered.'%sum(rejected_corrected)
 
 # 1.2. retrieving breseq variants
 print 'retrieving breseq variants...'
@@ -143,6 +137,13 @@ for i in range(len(pValues_corrected)):
         for element in uLoc:
             line2Write.append(str(element))
 
+        # gene name, gene function, variant frequency, mutation and effect
+        geneName,geneFunction,mutation,effect=geneInfoRetriever(uLoc)
+        line2Write.append(geneName)
+        line2Write.append(geneFunction)
+        line2Write.append(mutation)
+        line2Write.append(effect)
+
         # frequency of variants
         tableOfFrequencies=tested_observedFrequencies[i]
         for genotype in tableOfFrequencies:
@@ -151,24 +152,41 @@ for i in range(len(pValues_corrected)):
                 base=bases[j]
                 v=baseFreq/sum(genotype)
                 printingValue=str('%s(%.3f)'%(base,v))
-                line2Write.append(printingValue)
+                #line2Write.append(printingValue)
 
-        # gene name, gene function, variant frequency, mutation and effect
-        geneName,geneFunction,mutation,effect=geneInfoRetriever(uLoc)
-        line2Write.append(geneName)
-        line2Write.append(geneFunction)
-        line2Write.append(mutation)
-        line2Write.append(effect)
+        # computed frequencies
+        if uLoc[0] == 'indel':
+            finalGenotype=tableOfFrequencies[-1]
+            dominantIndex=finalGenotype.index(max(finalGenotype))
+        elif uLoc[0] == 'SNP':
+            dominantBase=mutation.split('|')[1]
+            if dominantBase == 'A':
+                dominantIndex=0
+            elif dominantBase == 'C':
+                dominantIndex=1
+            elif dominantBase == 'G':
+                dominantIndex=2
+            elif dominantBase == 'T':
+                dominantIndex=3
+            else:
+                print 'error from computing dominant base. exiting...'
+                sys.exit()            
+        else:
+            print 'error from computing frequencies. exiting...'
+            sys.exit()
+
+        for genotype in tableOfFrequencies:
+            v=genotype[dominantIndex]/sum(genotype)
+            printingValue=str('%.3f'%v)
+            line2Write.append(printingValue)
 
         # p-value
         value=str('%.3e'%pValues_corrected[i])
         line2Write.append(value)
 
         #
-        flag=dubiousGenesRemover(geneName,geneFunction)
-        if flag == True:
-            string2Write='\t'.join(line2Write)
-            g.write('%s\n'%string2Write)
+        string2Write='\t'.join(line2Write)
+        g.write('%s\n'%string2Write)
 
         #### make sure you check that the number of reads are more than xx
 
