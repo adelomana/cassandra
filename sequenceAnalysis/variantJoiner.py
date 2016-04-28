@@ -63,7 +63,25 @@ print '\t %s variants detected.\n'%len(varscanVariants)
 print 'filtering variants...'
 variants=breseqVariants+GATKvariants+varscanVariants
 
+# 2.0. checking that the variants are the same type
 print 'working with a full set of %s variants.'%len(variants)
+types=[]
+for element in variants[0]:
+    theType=type(element)
+    types.append(theType)
+
+for variant in variants:
+    putative=[]
+    for element in variant:
+        putative.append(type(element))
+    if putative != types:
+        print variant
+        print putative
+        print
+        print types
+        print
+        print 'error merging variants. exiting...'
+        sys.exit()
 
 # 2.1. remove low frequency variants (v < resolution)
 print '\n\t removing low frequency variants (v < %s)...'%('%.3f'%resolution)
@@ -92,14 +110,14 @@ for variant in filtredVariants2:
     loc=variant[:4]
     locations.append(loc)
 
-# create a list of positions that have at least one counts. make it unique list
+# create a list of positions that have at least two counts. make it unique list
 selectedLocations=[]
 for location in locations:
     if locations.count(location) >= 1:
         selectedLocations.append(location)
 uniqueSelectedLocations=list(set(selectedLocations))
 
-print 'detected %s unique variant from at least 1 callers...'%len(uniqueSelectedLocations)
+print 'detected %s unique locations from at least 2 callers...'%len(uniqueSelectedLocations)
 
 # create a list with variants of the unique locations
 filtredVariants3=[]
@@ -111,7 +129,7 @@ print 'about to write %s variants into a file...'%len(filtredVariants3)
 
 # 3. saving the biologically relevant variants
 print 'saving to a file...'
-outputFile='joinedVariants.txt'
+outputFile='joinedVariants.%s.txt'%len(filtredVariants3)
 g=open(outputFile,'w')
 for variant in filtredVariants3:
     for term in variant:

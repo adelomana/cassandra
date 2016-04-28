@@ -36,8 +36,13 @@ def baseRetriever(tube,uloc):
     else:
         vector=line.split()
         expectedNumberOfBases=int(vector[3])
-        rawBases=vector[4]
-        qualities=vector[5]
+        if expectedNumberOfBases == 0:
+            print 'WARNING: tube %s at position %s has 0 mapping reads. Returning empty genotype...'%(tube,uloc)
+            rawBases=''
+            qualities=''
+        else:
+            rawBases=vector[4]
+            qualities=vector[5]
 
     treatedBases=rawBases.replace('$','')
 
@@ -98,8 +103,8 @@ def baseRetriever(tube,uloc):
     return genotype
 
 # 0. user defined variables
-path2breseq='/Users/alomana/software/breseq-0.26.0-MacOSX/bin/breseq'
 path2datafiles='/Users/alomana/projects/ap/seqs/results/toronto/'
+inputFile='joinedVariants.23626.txt'
 
 experiments=['exp1','exp2','exp3','exp4','exp5']
 tubeCorrespondance={}
@@ -113,7 +118,6 @@ epsilon=1e-3
 
 # 1. reading variants
 print 'reading the input...'
-inputFile='joinedVariants.txt'
 variants=[]
 with open(inputFile,'r') as f:
     for line in f:
@@ -173,16 +177,6 @@ for experiment in experiments:
         tested_statistics.append(statistic)
         tested_pValues.append(pValue)
 
-# 3. saving non corrected rejected hypotheses
-print 'saving non-corrected significant varying variants...'
-outputFile='frequencyChangingVariants_nonCorrected.txt'
-f=open(outputFile,'w')
-for i in range(len(tested_pValues)):
-    if tested_pValues[i] < 0.05:
-        line=[i,tested_experiments[i],tested_positions[i],tested_observedFrequencies[i],tested_statistics[i],tested_pValues[i],'\n']
-        stringLine=[str(element) for element in line]
-        f.write('\t'.join(stringLine))
-f.close()
 
 # 4. obtain table of significances corrected by FDR
 print 'correcting for false discovery rate for %s tests...'%len(tested_pValues)
@@ -194,21 +188,8 @@ print 'rejected hypotheses, Bonferroni corrected or FDR-BH adjusted respectively
 
 print '%s variants have frequency difference.'%sum(rejected_corrected)
 
-# 4.1 saving table with variants with significant change in frequency
-print 'saving table with variants with significant change in frequency...'
-outputFile='frequencyChangingVariants.txt'
-f=open(outputFile,'w')
-for i in range(len(tested_pValues)):
-    if rejected_corrected[i] == True:
-
-        line=[i,tested_experiments[i],tested_positions[i],tested_observedFrequencies[i],tested_statistics[i],pValues_corrected[i],'\n']
-        stringLine=[str(element) for element in line]
-        f.write('\t'.join(stringLine))
-        
-f.close()
-
-# 4.2. saving variables of interest for downstream analysis as a pickled object
-jar='changingVariants.pckl'
+# 4.1. saving variables of interest for downstream analysis as a pickled object
+jar='changingVariants.%s.pckl'%str(sum(rejected_corrected))
 f=open(jar,'w')
 pickle.dump([tested_experiments,tested_positions,tested_observedFrequencies,rejected_corrected,tested_statistics,pValues_corrected],f)
 f.close()

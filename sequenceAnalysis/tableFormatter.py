@@ -2,23 +2,85 @@
 
 import sys,pickle
 sys.path.append('lib')
-import breseqReader
+import breseqReader,GATKreader,varscanReader
 
-def geneNameRetriever(uLoc):
+def annotationReader(sysName):
+
+    '''
+    this function reads info about the gene, obtained from xx
+    '''
+
+    found=False
+
+    infoFile='annotation.txt'
+    with open(infoFile,'r') as f:
+        f.next()
+        for line in f:
+            vector=line.split('\t')
+            if vector[1] == sysName:
+                found=True
+                geneName=vector[3]
+                if geneName == '':
+                    geneName=sysName
+                geneFunction=vector[4].replace('\n','')
+
+    if found == False:
+        print sysName
+        print 'annotation not found. exiting...'
+        sys.exit()
+
+    if geneName == '':
+        print sysName
+        sys.exit()
+
+    return geneName,geneFunction
+
+def dubiousGenesRemover(geneName,geneFunction):
+
+    '''
+    this function flags down dubious genes
+    '''
+
+    flag=True
+
+    if geneName == 'tL(UAA)N':
+        flag=False
+
+    vector=geneFunction.split()
+    if vector[:3] == ['Dubious', 'open', 'reading']:
+        flag=False
+    
+    return flag
+
+def geneInfoRetriever(uLoc):
 
     '''
     this function retrieves gene name from a chromosome location
     '''
 
-    print uLoc
-    print breseqVariants
+    found=False
+    for variant in allVariants:
+        putative=(variant[0],variant[2],variant[3])
+        if uLoc == putative:
+            found=True
+            sysName=variant[7]
+            mutation='|'.join((variant[4],variant[5]))
+            effect=variant[11]
+            break
 
-    return geneName
+    if found == False:
+        print uLoc
+        print 'variant not recovered. exiting...'
+        sys.exit()
+
+    # converting sysName into geneName
+    geneName,geneFunction=annotationReader(sysName)
+    
+    return geneName,geneFunction,mutation,effect
 
 # 0. user defined variables
-outputFile='formattedTable.txt'
+outputFile='formattedTable.80.txt'
 
-experiments=['exp5','exp4','exp1','exp2','exp3']
 experimentLabels={}
 experimentLabels['exp1']='E2'
 experimentLabels['exp2']='E4'
@@ -26,23 +88,26 @@ experimentLabels['exp3']='E6'
 experimentLabels['exp4']='M2'
 experimentLabels['exp5']='C1'
 
-tubes=['A2','B','D','E2','F','G','H2','I','J2','K','L','M']
+bases=['A','C','G','T','O']
 
 # 1. recovering data
 print 'recovering data...'
 
 # 1.1. recovering changing variants...
 print 
-jar='changingVariants.pckl'
+jar='changingVariants.80.pckl'
 f=open(jar,'r')
 [tested_experiments,tested_positions,tested_observedFrequencies,rejected_corrected,tested_statistics,pValues_corrected]=pickle.load(f)
 f.close()
 
 # 1.2. retrieving breseq variants
 print 'retrieving breseq variants...'
+tubes=['A2','B','D','E2','F','G','H2','I','J2','K','L','M']
 breseqVariants=breseqReader.main(tubes)
-
-print 'data recovered.'
+GATKvariants=GATKreader.main(tubes)
+varscanVariants=varscanReader.main(tubes)
+allVariants=breseqVariants+GATKvariants+varscanVariants
+print '%s variants recovered.'%len(allVariants)
 print
 
 # 2. performing the formatting
@@ -67,43 +132,45 @@ for i in range(len(pValues_corrected)):
         
         # 2. formatting the table with the following fields
 
+        line2Write=[]
+
         # experiment
         element=tested_experiments[i]
-        g.write(experimentLabels[element])
-        g.write('\t')
+        line2Write.append(experimentLabels[element])
 
         # type of variant,chr,position
         uLoc=tested_positions[i]
         for element in uLoc:
-            g.write(str(element))
-            g.write('\t')
+            line2Write.append(str(element))
 
         # frequency of variants
         tableOfFrequencies=tested_observedFrequencies[i]
         for genotype in tableOfFrequencies:
-            for base in genotype:
-                v=base/sum(genotype)
-                printingValue=str('%.3f'%v)
-                g.write(printingValue)
-                g.write('\t')
+            for j in range(len(genotype)):
+                baseFreq=genotype[j]
+                base=bases[j]
+                v=baseFreq/sum(genotype)
+                printingValue=str('%s(%.3f)'%(base,v))
+                line2Write.append(printingValue)
 
-        # gene name
-        geneName=geneNameRetriever(uLoc)
-        g.write(geneName)
-        g.write('\t')
+        # gene name, gene function, variant frequency, mutation and effect
+        geneName,geneFunction,mutation,effect=geneInfoRetriever(uLoc)
+        line2Write.append(geneName)
+        line2Write.append(geneFunction)
+        line2Write.append(mutation)
+        line2Write.append(effect)
 
         # p-value
         value=str('%.3e'%pValues_corrected[i])
-        g.write(value)
-        g.write('\t')
-
-        # gene function
-
-        # effect
+        line2Write.append(value)
 
         #
-        g.write('\n')
-        sys.exit()
+        flag=dubiousGenesRemover(geneName,geneFunction)
+        if flag == True:
+            string2Write='\t'.join(line2Write)
+            g.write('%s\n'%string2Write)
+
+        #### make sure you check that the number of reads are more than xx
 
 g.close()
 
