@@ -119,6 +119,8 @@ gene function
 effect
 '''
 
+uniqueLoci={}
+
 g=open(outputFile,'w')
 
 for i in range(len(pValues_corrected)):
@@ -184,13 +186,32 @@ for i in range(len(pValues_corrected)):
         value=str('%.3e'%pValues_corrected[i])
         line2Write.append(value)
 
-        #
+        # final line
         string2Write='\t'.join(line2Write)
         g.write('%s\n'%string2Write)
 
-        #### make sure you check that the number of reads are more than xx
+        # appending unique loci
+        if experimentLabels[tested_experiments[i]] not in uniqueLoci.keys():
+            uniqueLoci[experimentLabels[tested_experiments[i]]]=[geneName]
+        else:
+            if geneName not in uniqueLoci[experimentLabels[tested_experiments[i]]]:
+                uniqueLoci[experimentLabels[tested_experiments[i]]].append(geneName)
 
 g.close()
+
+# print stamps
+allLoci=[]
+for label in uniqueLoci.keys():
+    
+    print label,len(uniqueLoci[label])
+    print uniqueLoci[label]
+    print
+
+    for element in uniqueLoci[label]:
+        if element not in allLoci:
+            allLoci.append(element)
+            
+print '%s unique loci detected.'%len(allLoci)
 
 print '... table formatted.'
 print 'analysis completed'
