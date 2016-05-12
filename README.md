@@ -1,5 +1,5 @@
 # cassandra
-Computational tool for the study of adaptive prediction emergence.  
+Tools for quantitative analysis of adaptive prediction emergence.  
 
 ## Conditioned Fitness 
 
