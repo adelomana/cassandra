@@ -38,13 +38,11 @@ w = [pvalue_0, pvalue_50, pvalue_100, pvalue_150, pvalue_200, pvalue_250, pvalue
 
 matplotlib.pyplot.errorbar(x,y,yerr=z,fmt=':o',color='red',ecolor='red',markeredgecolor='red',capsize=0,ms=thePointSize,mew=0)
 
-print max(y),y
-
 for i in range(len(w)):
     if y[i] > 0.:
-        sp=y[i]+0.1
+        sp=y[i]+z[i]+0.02
     else:
-        sp=y[i]-0.1
+        sp=y[i]-z[i]-0.02
     if w[i] < 0.05 and w[i] >= 0.01:
         matplotlib.pyplot.scatter(x[i], sp, s=75, c='black', marker=r"${*}$", edgecolors='none')
     if w[i] < 0.01:

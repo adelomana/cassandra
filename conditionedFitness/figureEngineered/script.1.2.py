@@ -1,4 +1,4 @@
-import matplotlib,numpy,sys,scipy
+import numpy,sys,scipy
 import matplotlib.pyplot
 sys.path.append('/Users/alomana/gDrive2/projects/centers/ap/src/assessmentGraphs/publicationFigures/lib')
 import calculateStatistics
@@ -32,14 +32,12 @@ z = [cf_sd_0, cf_sd_50, cf_sd_190, cf_sd_300]
 w = [pvalue_0, pvalue_50, pvalue_190, pvalue_300]
 
 matplotlib.pyplot.errorbar(x,y,yerr=z,fmt=':o',color='blue',ecolor='blue',markeredgecolor='blue',capsize=0,ms=thePointSize,mew=0)
-print x
-print y
 
 for i in range(len(w)):
     if y[i] > 0.:
-        sp=y[i]+0.11
+        sp=y[i]+z[i]+0.02
     else:
-        sp=y[i]-0.11
+        sp=y[i]-z[i]-0.02
     if w[i] < 0.05 and w[i] >= 0.01:
         matplotlib.pyplot.scatter(x[i], sp, s=75, c='black', marker=r"${*}$", edgecolors='none')
     if w[i] < 0.01:
@@ -51,9 +49,7 @@ matplotlib.pyplot.plot([0,300],[0,0],'--',color='black')
 sequencing=[0,50,300]
 top=-0.4
 for xpos in sequencing:
-    #matplotlib.pyplot.scatter(xpos, top, s=400, c='black', marker=r"${\uparrow}$", edgecolors='none')
-    #matplotlib.pyplot.scatter(xpos+10, top, s=400, c='black', marker="v", edgecolors='none')
-    matplotlib.pyplot.scatter(xpos+20, top, s=400, c='black', marker="x", edgecolors='none')
+    matplotlib.pyplot.scatter(xpos, top, s=400, c='black', marker=r"x", edgecolors='none')
 
 matplotlib.pyplot.xlim([-25,325])
 matplotlib.pyplot.ylim([-0.55,0.55])

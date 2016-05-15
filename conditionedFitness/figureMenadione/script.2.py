@@ -31,16 +31,15 @@ y = [cf_mu_0, cf_mu_50, cf_mu_190, cf_mu_300]
 z = [cf_sd_0, cf_sd_50, cf_sd_190, cf_sd_300]
 w = [pvalue_0, pvalue_50, pvalue_190, pvalue_300]
 
-
 matplotlib.pyplot.errorbar(x,y,yerr=z,fmt=':o',color='orange',ecolor='orange',markeredgecolor='orange',capsize=0,ms=thePointSize,mew=0)
 
 matplotlib.pyplot.tight_layout()
 
 for i in range(len(w)):
     if y[i] > 0.:
-        sp=y[i]+0.1
+        sp=y[i]+z[i]+0.02
     else:
-        sp=y[i]-0.1
+        sp=y[i]-z[i]-0.02
     if w[i] < 0.05 and w[i] >= 0.01:
         matplotlib.pyplot.scatter(x[i], sp, s=75, c='black', marker=r"${*}$", edgecolors='none')
     if w[i] < 0.01:

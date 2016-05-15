@@ -40,14 +40,12 @@ z = [cf_sd_0, cf_sd_50, cf_sd_100, cf_sd_150, cf_sd_200, cf_sd_250]
 w = [pvalue_0, pvalue_50, pvalue_100, pvalue_150, pvalue_200, pvalue_250]
 
 matplotlib.pyplot.errorbar(x,y,yerr=z,fmt=':o',color='blue',ecolor='blue',markeredgecolor='blue',capsize=0,ms=thePointSize,mew=0)
-print x
-print y
 
 for i in range(len(w)):
     if y[i] > 0.:
-        sp=y[i]+0.1
+        sp=y[i]+z[i]+0.02
     else:
-        sp=y[i]-0.1
+        sp=y[i]-z[i]-0.02
     if w[i] < 0.05 and w[i] >= 0.01:
         matplotlib.pyplot.scatter(x[i], sp, s=75, c='black', marker=r"${*}$", edgecolors='none')
     if w[i] < 0.01:

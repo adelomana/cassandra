@@ -1,4 +1,4 @@
-import matplotlib,numpy,sys,scipy
+import numpy,sys,scipy
 import matplotlib.pyplot
 sys.path.append('/Users/alomana/gDrive2/projects/centers/ap/src/assessmentGraphs/publicationFigures/lib')
 import calculateStatistics
@@ -35,9 +35,9 @@ matplotlib.pyplot.errorbar(x,y,yerr=z,fmt=':o',color='blue',ecolor='blue',marker
 
 for i in range(len(w)):
     if y[i] > 0.:
-        sp=y[i]+0.1
+        sp=y[i]+z[i]+0.02
     else:
-        sp=y[i]-0.1
+        sp=y[i]-z[i]-0.02
     if w[i] < 0.05 and w[i] >= 0.01:
         matplotlib.pyplot.scatter(x[i], sp, s=75, c='black', marker=r"${*}$", edgecolors='none')
     if w[i] < 0.01:

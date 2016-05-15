@@ -5,7 +5,6 @@ import calculateStatistics
 
 ### MAIN
 
-
 matplotlib.rcParams.update({'font.size':36,'font.family':'Times New Roman','xtick.labelsize':28,'ytick.labelsize':28})
 thePointSize=12
 
@@ -48,9 +47,9 @@ matplotlib.pyplot.errorbar(x,y,yerr=z,fmt=':o',color='green',ecolor='green',mark
 
 for i in range(len(w)):
     if y[i] > 0.:
-        sp=y[i]+0.1
+        sp=y[i]+z[i]+0.02
     else:
-        sp=y[i]-0.1
+        sp=y[i]-z[i]-0.02
     if w[i] < 0.05 and w[i] >= 0.01:
         matplotlib.pyplot.scatter(x[i], sp, s=75, c='black', marker=r"${*}$", edgecolors='none')
     if w[i] < 0.01:
