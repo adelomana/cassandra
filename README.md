@@ -10,4 +10,4 @@ Scripts for the calculation of conditioned fitness (CF) and generation of figure
 Scripts for the analysis of fluorescence images.   
 
 ## Sequence Analysis
-Scripts for the analysis of genomic variants.   
+Scripts for the analysis of coverage and genomic variants.   
