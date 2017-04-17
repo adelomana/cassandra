@@ -54,7 +54,7 @@ def trimmomaticCaller(instance):
 ### MAIN
 
 # 0. defining user variables
-rawReadsDir='/Users/alomana/scratch/tempo/AP_transcriptomics-36580585/'
+rawReadsDir='/Users/alomana/scratch/FASTQ/'
 cleanReadsDir='/Users/alomana/scratch/cleanFASTQ/'
 logFilesDir='/Users/alomana/scratch/trimmomaticLogs/'
 path2Adapter='/Users/alomana/software/Trimmomatic-0.36/adapters/TruSeq3-PE-2.fa'
