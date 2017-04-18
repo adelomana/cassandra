@@ -113,17 +113,17 @@ def cuffquantCaller(inputFile):
     return None
 
 # 0. defining input files
-bamFilesDir='/proj/omics4tb/alomana/projects/TLR/data/BAM/'
-cufflinksDir='/proj/omics4tb/alomana/projects/TLR/data/cufflinks/'
-gtfFile='/proj/omics4tb/alomana/projects/TLR/data/genome/hsa.ASM680v1.edited.gff3'
-maskFile='/proj/omics4tb/alomana/projects/TLR/data/genome/mask.gff3'
+bamFilesDir='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/BAM/'
+cufflinksDir='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/cufflinks/'
+gtfFile='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/annotation/Saccharomyces_cerevisiae.R64-1-1.34.gff3'
+maskFile='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/annotation/Saccharomyces_cerevisiae.R64-1-1.34.masked.gff3'
 numberOfThreads=16
 
 # 1. defining the BAM and abundance files
 roots=os.listdir(bamFilesDir)
 bamFiles=[bamFilesDir+element+'/Aligned.sortedByCoord.out.bam' for element in roots]
 abundanceFiles=[cufflinksDir+element+'/abundances.cxb' for element in roots]
-labels=[element.split('_')[-1] for element in roots]
+labels=[element.split('_')[0] for element in roots]
 
 # 2. calling cuffquantCaller 
 #print('calling cuffquant...')
@@ -131,9 +131,9 @@ labels=[element.split('_')[-1] for element in roots]
 #    cuffquantCaller(inputFile)
 
 # 3. calling cuffnorm
-#print('calling cuffnorm...')
-#cuffnormCaller()
+print('calling cuffnorm...')
+cuffnormCaller()
 
 # 4. calling cuffdiff
-print('calling cuffdiff...')
-cuffdiffCaller()
+#print('calling cuffdiff...')
+#cuffdiffCaller()

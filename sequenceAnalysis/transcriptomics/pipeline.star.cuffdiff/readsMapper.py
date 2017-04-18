@@ -58,10 +58,10 @@ def STARcalling(tag):
 # 0. defining several input/output paths
 readsFilesDir='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/cleanFASTQ/'
 bamFilesDir='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/BAM/'
-STARexecutable='/proj/omics4tb/alomana/software/STAR-2.5.2b/bin/Linux_x86_64/STAR'
+STARexecutable='/proj/omics4tb/alomana/software/STAR-2.5.3a/bin/Linux_x86_64/STAR'
 genomeIndexDir='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/starIndex'
-genomeFastaFile='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/annotation/S288C_reference_sequence_R64-2-1_20150113.fsa'              
-genomeAnnotationFile='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/annotation/saccharomyces_cerevisiae_R64-2-1_20150113.minimal.gff'   
+genomeFastaFile='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/annotation/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa'              
+genomeAnnotationFile='/proj/omics4tb/alomana/projects/ap/data/transcriptomics/annotation/Saccharomyces_cerevisiae.R64-1-1.34.gff3'   
 numberOfThreads=16
 
 # 1. recover the clean FASTQ files
