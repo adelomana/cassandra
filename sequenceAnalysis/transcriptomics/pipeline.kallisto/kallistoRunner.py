@@ -32,7 +32,7 @@ def caller(tag):
 # 0. user defined variables
 fastqDir='/Volumes/omics4tb/alomana/projects/ap/seqs/transcriptomics/cleanFASTQ/'
 quantDir='/Volumes/omics4tb/alomana/projects/ap/seqs/transcriptomics/kallisto/'
-transcriptomeIndex='/Volumes/omics4tb/alomana/projects/ap/seqs/transcriptomics/annotation/Saccharomyces_cerevisiae.R64-1-1.rel81.cdna.all.20170417.idx'
+transcriptomeIndex='/Volumes/omics4tb/alomana/projects/ap/seqs/transcriptomics/kallistoIndex/coding.idx'
 resultsDir='/Volumes/omics4tb/alomana/projects/ap/seqs/transcriptomics/expression/'
 
 # 1. reading files
@@ -48,14 +48,13 @@ print('processing files...')
 for tag in sortedTags:
     caller(tag)
 print('...quantification done.')
-sys.exit()
 
 # 3. generating full expression matrix
 print('generating expression matrix file...')
 
 # 3.1. reading the genes
 genes=[]
-oneFile=quantDir+files[0].split('.fastq')[0]+'/abundance.tsv'
+oneFile=quantDir+sortedTags[0].split('_L')[0]+'/abundance.tsv'
 f=open(oneFile,'r')
 next(f)
 for line in f:
@@ -63,15 +62,16 @@ for line in f:
     geneName=vector[0]
     genes.append(geneName)
 f.close()
+genes.sort()
 
 # 3.2. reading expression
 expression={}
-for element in files:
-    tag=element.split('.clean.fastq')[0]
+for element in sortedTags:
+    tag=element.split('_L')[0]
     if tag not in expression.keys():
         expression[tag]={}
 
-    workingFile=quantDir+element.split('.fastq')[0]+'/abundance.tsv'
+    workingFile=quantDir+tag+'/abundance.tsv'
     f=open(workingFile,'r')
     next(f)
     for line in f:
@@ -84,82 +84,51 @@ for element in files:
 # 3.3. writing expression matrix
 expressionFile=resultsDir+'expressionMatrix.kallisto.txt'
 conditionNames=list(expression.keys())
-
-rbfConditions=[element for element in conditionNames if 'rbf' in element]
-inverse=[element[::-1] for element in rbfConditions]
-inverse.sort()
-revertedRBF=[element[::-1] for element in inverse]
-
-trnaConditions=[element for element in conditionNames if 'trna' in element]
-inverse=[element[::-1] for element in trnaConditions]
-inverse.sort()
-revertedTRNA=[element[::-1] for element in inverse]
-
-reverted=revertedTRNA+revertedRBF
-
-x=[]
-theEdgeColors=[]
-theFaceColors=[]
-theMarkers=[]
+conditionNames.sort()
 
 g=open(expressionFile,'w')
 
+# header
 g.write('\t')
-for i in range(len(reverted)):
-    g.write('{}\t'.format(reverted[i]))
-    
-    x.append([])
-
-    if 'tp.1' in reverted[i]:
-        theEdgeColors.append('blue')
-    elif 'tp.2' in reverted[i]:
-        theEdgeColors.append('green')
-    elif 'tp.3' in reverted[i]:
-        theEdgeColors.append('orange')
-    else:
-        theEdgeColors.append('red')
-
-    if 'trna' in reverted[i]:
-        theFaceColors.append('w')
-    else:
-        theFaceColors.append(theEdgeColors[i])
-
-    if 'rep.1' in reverted[i]:
-        theMarkers.append('o')
-    elif 'rep.2' in reverted[i]:
-        theMarkers.append('s')
-    else:
-        theMarkers.append('^')
-    
+for i in range(len(conditionNames)):
+    g.write('{}\t'.format(conditionNames[i]))
 g.write('\n')
 
+# body
 for i in range(len(genes)):
-    g.write('{}\t'.format(synonyms[genes[i]]))
-    for j in range(len(reverted)):
-        value=expression[reverted[j]][genes[i]]
-        g.write('{}\t'.format(value))
-
-        x[j].append(value)
-        
+    g.write('{}\t'.format(genes[i]))
+    for j in range(len(conditionNames)):
+        value=expression[conditionNames[j]][genes[i]]
+        g.write('{}\t'.format(value))        
     g.write('\n')
     
 g.close()
 
 # 4. exploring the data
 print('visualizing the data...')
-original=numpy.array(x)
+
+x=[]
+for i in range(len(conditionNames)):
+    sample=[]
+    for j in range(len(genes)):
+        value=expression[conditionNames[i]][genes[j]]
+        sample.append(value)
+    x.append(sample)
+    print(conditionNames[i],sample[:10])
+experiment=numpy.array(x)
 
 # 4.1. PCA of samples
 print('running PCA...')
 pcaMethod=sklearn.decomposition.PCA(n_components=5)
-pcaObject=pcaMethod.fit(original)
-new=pcaObject.transform(original)
+pcaObject=pcaMethod.fit(experiment)
+new=pcaObject.transform(experiment)
 explainedVar=pcaObject.explained_variance_ratio_
 print('cumsum explained variance...')
 print(numpy.cumsum(explainedVar))
 
 for i in range(len(new)):
-    matplotlib.pyplot.scatter(new[i,0],new[i,1],c=theFaceColors[i],marker=theMarkers[i],s=60,edgecolors=theEdgeColors[i])
+    print(conditionNames[i],new[i,0])
+    matplotlib.pyplot.scatter(new[i,0],new[i,1])
 
 matplotlib.pyplot.xlabel('PCA 1 ({0:.2f} var)'.format(explainedVar[0]))
 matplotlib.pyplot.ylabel('PCA 2 ({0:.2f} var)'.format(explainedVar[1]))
@@ -167,6 +136,8 @@ matplotlib.pyplot.tight_layout()
 matplotlib.pyplot.savefig('figure.pca.png')
 matplotlib.pyplot.clf()
 print()
+
+sys.exit()
 
 # 4.2. t-SNE of samples
 print('running t-SNE...')
