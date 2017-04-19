@@ -6,7 +6,7 @@ def cuffdiffCaller():
     this function calls cuffdiff using specific conditions
     '''
 
-    # working on tp1 vs tp4
+    # hypothesis 1: are there DETs between control samples?
     outputDir=cufflinksDir+'tp4.vs.tp1'
     controlFiles=[element for element in abundanceFiles if 'tp.1' in element and 'trna' in element]
     sampleFiles=[element for element in abundanceFiles if 'tp.4' in element and 'trna' in element]
@@ -131,8 +131,8 @@ labels=[element.split('_')[0] for element in roots]
 #    cuffquantCaller(inputFile)
 
 # 3. calling cuffnorm
-print('calling cuffnorm...')
-cuffnormCaller()
+#print('calling cuffnorm...')
+#cuffnormCaller()
 
 # 4. calling cuffdiff
 #print('calling cuffdiff...')

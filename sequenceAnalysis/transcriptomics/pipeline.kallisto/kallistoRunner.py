@@ -30,10 +30,10 @@ def caller(tag):
 ### MAIN
 
 # 0. user defined variables
-fastqDir='/Volumes/omics4tb/alomana/projects/ap/seqs/transcriptomics/cleanFASTQ/'
-quantDir='/Volumes/omics4tb/alomana/projects/ap/seqs/transcriptomics/kallisto/'
-transcriptomeIndex='/Volumes/omics4tb/alomana/projects/ap/seqs/transcriptomics/kallistoIndex/coding.idx'
-resultsDir='/Volumes/omics4tb/alomana/projects/ap/seqs/transcriptomics/expression/'
+fastqDir='/Volumes/omics4tb/alomana/projects/ap/data/transcriptomics/cleanFASTQ/'
+quantDir='/Volumes/omics4tb/alomana/projects/ap/data/transcriptomics/kallisto/'
+transcriptomeIndex='/Volumes/omics4tb/alomana/projects/ap/data/transcriptomics/kallistoIndex/coding.idx'
+resultsDir='/Volumes/omics4tb/alomana/projects/ap/data/transcriptomics/expression/'
 
 # 1. reading files
 print('reading files...')
@@ -44,10 +44,10 @@ sortedTags=[element for element in items if '_L001_R1_001.paired.forward.fastq' 
 sortedTags.sort()
 
 # 2. processing
-print('processing files...')
-for tag in sortedTags:
-    caller(tag)
-print('...quantification done.')
+#print('processing files...')
+#for tag in sortedTags:
+#    caller(tag)
+#print('...quantification done.')
 
 # 3. generating full expression matrix
 print('generating expression matrix file...')
@@ -107,14 +107,47 @@ g.close()
 # 4. exploring the data
 print('visualizing the data...')
 
+theMarkers=[]
+theColors=[]
+theMFCs=[]
+
 x=[]
 for i in range(len(conditionNames)):
-    sample=[]
-    for j in range(len(genes)):
-        value=expression[conditionNames[i]][genes[j]]
-        sample.append(value)
-    x.append(sample)
-    print(conditionNames[i],sample[:10])
+    if 'n300-C' not in conditionNames[i]:
+        sample=[]
+        for j in range(len(genes)):
+            value=expression[conditionNames[i]][genes[j]]
+            sample.append(value)
+        x.append(sample)
+
+        sampleName=conditionNames[i]
+        # tubes
+        if 'BR1' in sampleName or 'n300' in sampleName:
+            theMarkers.append('o')
+        elif 'BR2' in sampleName or 'n50' in sampleName:
+            theMarkers.append('s')
+        elif 'BR3' in sampleName or 'n180' in sampleName:
+            theMarkers.append('^')
+        else:
+            print('error a')
+            sys.exit()
+
+        # treatments
+        if '-A' in sampleName or '-B' in sampleName or '-D' in sampleName:
+            theColors.append('black')
+        elif '-C' in sampleName:
+            theColors.append('red')
+        elif '-E' in sampleName:
+            theColors.append('green')
+        elif '-F' in sampleName:
+            theColors.append('blue')
+
+        # evolution
+        if 'BR' in sampleName:
+            theMFCs.append('white')
+        else:
+            theMFCs.append(theColors[-1])
+
 experiment=numpy.array(x)
 
 # 4.1. PCA of samples
@@ -128,25 +161,22 @@ print(numpy.cumsum(explainedVar))
 
 for i in range(len(new)):
     print(conditionNames[i],new[i,0])
-    matplotlib.pyplot.scatter(new[i,0],new[i,1])
+    matplotlib.pyplot.scatter(new[i,0],new[i,1],marker=theMarkers[i],color=theColors[i],facecolor=theMFCs[i])
 
 matplotlib.pyplot.xlabel('PCA 1 ({0:.2f} var)'.format(explainedVar[0]))
 matplotlib.pyplot.ylabel('PCA 2 ({0:.2f} var)'.format(explainedVar[1]))
 matplotlib.pyplot.tight_layout()
 matplotlib.pyplot.savefig('figure.pca.png')
 matplotlib.pyplot.clf()
-print()
-
-sys.exit()
 
 # 4.2. t-SNE of samples
 print('running t-SNE...')
 tSNE_Method=sklearn.manifold.TSNE(method='exact',verbose=1,init='pca')
-tSNE_Object=tSNE_Method.fit(original)
-new=tSNE_Object.fit_transform(original)
+tSNE_Object=tSNE_Method.fit(experiment)
+new=tSNE_Object.fit_transform(experiment)
 
 for i in range(len(new)):
-    matplotlib.pyplot.scatter(new[i,0],new[i,1],c=theFaceColors[i],marker=theMarkers[i],s=60,edgecolors=theEdgeColors[i])
+    matplotlib.pyplot.scatter(new[i,0],new[i,1],s=60)
 matplotlib.pyplot.savefig('figure.tSNE.png')
 matplotlib.pyplot.clf()
 print()
