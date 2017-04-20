@@ -6,7 +6,12 @@ def cuffdiffCaller():
     this function calls cuffdiff using specific conditions
     '''
 
-    # hypothesis 1: are there DETs between control samples?
+    print(labels)
+    sys.exit()
+    # hypothesis 1: control0 vs control1
+    # hypothesis 2: control0 vs FOA1
+    # hypothesis 3: caffeine0 vs caffeine1
+    # hypothesis 4: caffeine0 vs caffeine+FOA1
     outputDir=cufflinksDir+'tp4.vs.tp1'
     controlFiles=[element for element in abundanceFiles if 'tp.1' in element and 'trna' in element]
     sampleFiles=[element for element in abundanceFiles if 'tp.4' in element and 'trna' in element]

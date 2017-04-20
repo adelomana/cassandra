@@ -113,7 +113,7 @@ theMFCs=[]
 
 x=[]
 for i in range(len(conditionNames)):
-    if 'n300-C' not in conditionNames[i]:
+    if 'test' not in conditionNames[i]: # n-300-C
         sample=[]
         for j in range(len(genes)):
             value=expression[conditionNames[i]][genes[j]]
