@@ -50,12 +50,67 @@ for tube in tubes:
 caffeineEffectIntersectNaive= list(set(caffeineEffect['l1']['naive']['h1']) & set(caffeineEffect['l2']['naive']['h1']) & set(caffeineEffect['l3']['naive']['h1']))
 caffeineEffectUnionNaive=list(set(caffeineEffect['l1']['naive']['h1']) | set(caffeineEffect['l2']['naive']['h1']) | set(caffeineEffect['l3']['naive']['h1']))
 print('caffeine effect naive intersect: {} genes, out of {} {} {} genes per line.'.format(len(caffeineEffectIntersectNaive), len(caffeineEffect['l1']['naive']['h1']), len(caffeineEffect['l2']['naive']['h1']), len(caffeineEffect['l3']['naive']['h1'])))
+print('caffeine effect naive union: {} genes.'.format(len(caffeineEffectUnionNaive)))
+
+current=list(set(caffeineEffect['l1']['naive']['h1']) & set(caffeineEffect['l2']['naive']['h1']))
+print('intersect l1 and l2: {} genes.'.format(len(current)))
+
+current=list(set(caffeineEffect['l1']['naive']['h1']) & set(caffeineEffect['l3']['naive']['h1']))
+print('intersect l1 and l3: {} genes.'.format(len(current)))
+
+current=list(set(caffeineEffect['l2']['naive']['h1']) & set(caffeineEffect['l3']['naive']['h1']))
+print('intersect l2 and l3: {} genes.'.format(len(current)))
+
+union23=list(set(caffeineEffect['l2']['naive']['h1']) | set(caffeineEffect['l3']['naive']['h1']))
+unique1=[element for element in caffeineEffect['l1']['naive']['h1'] if element not in union23]
+print('unique1: {} genes.'.format(len(unique1)))
+
+union13=list(set(caffeineEffect['l1']['naive']['h1']) | set(caffeineEffect['l3']['naive']['h1']))
+unique2=[element for element in caffeineEffect['l2']['naive']['h1'] if element not in union13]
+print('unique2: {} genes.'.format(len(unique2)))
+
+union12=list(set(caffeineEffect['l1']['naive']['h1']) | set(caffeineEffect['l2']['naive']['h1']))
+unique3=[element for element in caffeineEffect['l3']['naive']['h1'] if element not in union12]
+print('unique3: {} genes.'.format(len(unique3)))
+
+print('core DETs...')          
 for element in caffeineEffectIntersectNaive:
     print(element)
-    
+
+print('specific DETs...')
+for tube in tubes:
+    print(tube)
+    DETs=caffeineEffect[tube]['naive']['h1']
+    for DET in DETs:
+        print(DET)
+        
 # 1.3. define caffeine effects in evolved lines and see how different they are to naive
 caffeineEffectIntersectEvolved= list(set(caffeineEffect['l1']['evolved']['h1']) & set(caffeineEffect['l2']['evolved']['h1']) & set(caffeineEffect['l3']['evolved']['h1']))
 print('caffeine effect evolved intersect: {} genes, out of {} {} {} genes per line'.format(len(caffeineEffectIntersectEvolved),len(caffeineEffect['l1']['evolved']['h1']), len(caffeineEffect['l2']['evolved']['h1']), len(caffeineEffect['l3']['evolved']['h1'])))
+caffeineEffectUnionEvolved=list(set(caffeineEffect['l1']['evolved']['h1']) | set(caffeineEffect['l2']['evolved']['h1']) | set(caffeineEffect['l3']['evolved']['h1']))
+print('caffeine effect evolved union: {} genes.'.format(len(caffeineEffectUnionEvolved)))
+
+current=list(set(caffeineEffect['l1']['evolved']['h1']) & set(caffeineEffect['l2']['evolved']['h1']))
+print('intersect l1 and l2: {} genes.'.format(len(current)))
+
+current=list(set(caffeineEffect['l1']['evolved']['h1']) & set(caffeineEffect['l3']['evolved']['h1']))
+print('intersect l1 and l3: {} genes.'.format(len(current)))
+
+current=list(set(caffeineEffect['l2']['evolved']['h1']) & set(caffeineEffect['l3']['evolved']['h1']))
+print('intersect l2 and l3: {} genes.'.format(len(current)))
+
+union23=list(set(caffeineEffect['l2']['evolved']['h1']) | set(caffeineEffect['l3']['evolved']['h1']))
+unique1=[element for element in caffeineEffect['l1']['evolved']['h1'] if element not in union23]
+print('unique1: {} genes.'.format(len(unique1)))
+
+union13=list(set(caffeineEffect['l1']['evolved']['h1']) | set(caffeineEffect['l3']['evolved']['h1']))
+unique2=[element for element in caffeineEffect['l2']['evolved']['h1'] if element not in union13]
+print('unique2: {} genes.'.format(len(unique2)))
+
+union12=list(set(caffeineEffect['l1']['evolved']['h1']) | set(caffeineEffect['l2']['evolved']['h1']))
+unique3=[element for element in caffeineEffect['l3']['evolved']['h1'] if element not in union12]
+print('unique3: {} genes.'.format(len(unique3)))
+
 for element in caffeineEffectIntersectEvolved:
     print(element)
 
