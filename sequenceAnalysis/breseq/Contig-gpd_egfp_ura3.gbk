@@ -1,0 +1,72 @@
+LOCUS       construct           1628 bp DNA    linear   SYN 28-JUL-2016
+DEFINITION  Contig1 yeast_GPD1_egfp_ura3.fasta.screen.ace.12 from 1281 to 2908.
+ACCESSION   .
+VERSION     .
+KEYWORDS    Contig-gpd_egfp_ura3
+SOURCE      synthetic DNA construct
+  ORGANISM  synthetic DNA construct
+REFERENCE   1  (bases 1 to 1628)
+  AUTHORS   .
+  TITLE     Direct Submission
+  JOURNAL   Exported Thursday, Jul 28, 2016 from SnapGene Viewer 1.5.3
+            http://www.snapgene.com
+FEATURES             Location/Qualifiers
+     source          1..1628
+                     /organism="synthetic DNA construct"
+                     /mol_type="other DNA"
+     misc_feature    1..40
+                     /note="40bp_before stop codon of GPD1"
+                     /note="color: #a6acb3"
+     CDS             41..784
+                     /codon_start=1
+                     /note="EGFP sequence from pYM27"
+                     /note="This feature has 2 segments:
+                        1:  41 ..  70 / #99cc00 / ala-gly linker from pYM27
+                        2:  71 .. 784 / #99cc00 / EGFP ORF from pYM27"
+                     /translation="GAGAGAGAGAMSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEG
+                     DATYGKLTLKFICTTGKLPVPWPTLVTTLTYGVQCFSRYPDHMKQHDFFKSAMPEGYVQ
+                     ERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIM
+                     ADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPN
+                     EKRDHMVLLEFVTAAGITLGMDELYK"
+     CDS             785..1588
+                     /codon_start=1
+                     /note="ura3"
+                     /note="color: #993366"
+                     /translation="MSKATYKERAATHPSPVAAKLFNIMHEKQTNLCASLDVRTTKELL
+                     ELVEALGPKICLLKTHVDILTDFSMEGTVKPLKALSAKYNFLLFEDRKFADIGNTVKLQ
+                     YSAGVYRIAEWADITNAHGVVGPGIVSGLKQAAEEVTKEPRGLLMLAELSCKGSLSTGE
+                     YTKGTVDIAKSDKDFVIGFIAQRDMGGRDEGYDWLIMTPGVGLDDKGDALGQQYRTVDD
+                     VVSTGSDIIIVGRGLFAKGRDAKVEGERYRKAGWEAYLRRCGQQN"
+     misc_feature    1589..1628
+                     /note="40 bp after stop codon of gpd1"
+                     /note="color: #a6acb3"
+ORIGIN
+        1 cctgccggac atgattgaag aattagatct acatgaagat ggagcaggtg ctggtgctgg
+       61 tgctggagca atgagcaagg gcgaggagct gttcaccggg gtggtgccca tcctggtcga
+      121 gctggacggc gacgtaaacg gccacaagtt cagcgtgtcc ggcgagggcg agggcgatgc
+      181 cacctacggc aagctgaccc tgaagttcat ctgcaccacc ggcaagctgc ccgtgccctg
+      241 gcccaccctc gtgaccaccc tgacctacgg cgtgcagtgc ttcagccgct accccgacca
+      301 catgaagcag cacgacttct tcaagtccgc catgcccgaa ggctacgtcc aggagcgcac
+      361 catcttcttc aaggacgacg gcaactacaa gacccgcgcc gaggtgaagt tcgagggcga
+      421 caccctggtg aaccgcatcg agctgaaggg catcgacttc aaggaggacg gcaacatcct
+      481 ggggcacaag ctggagtaca actacaacag ccacaacgtc tatatcatgg ccgacaagca
+      541 gaagaacggc atcaaggtga acttcaagat ccgccacaac atcgaggacg gcagcgtgca
+      601 gctcgccgac cactaccagc agaacacccc catcggcgac ggccccgtgc tgctgcccga
+      661 caaccactac ctgagcaccc agtccgccct gagcaaagac cccaacgaga agcgcgatca
+      721 catggtcctg ctggagttcg tgaccgccgc cgggatcact ctcggcatgg acgagctgta
+      781 caagatgtcg aaagctacat ataaggaacg tgctgctact catcctagtc ctgttgctgc
+      841 caagctattt aatatcatgc acgaaaagca aacaaacttg tgtgcttcat tggatgttcg
+      901 taccaccaag gaattactgg agttagttga agcattaggt cccaaaattt gtttactaaa
+      961 aacacatgtg gatatcttga ctgatttttc catggagggc acagttaagc cgctaaaggc
+     1021 attatccgcc aagtacaatt ttttactctt cgaagacaga aaatttgctg acattggtaa
+     1081 tacagtcaaa ttgcagtact ctgcgggtgt atacagaata gcagaatggg cagacattac
+     1141 gaatgcacac ggtgtggtgg gcccaggtat tgttagcggt ttgaagcagg cggcagaaga
+     1201 agtaacaaag gaacctagag gccttttgat gttagcagaa ttgtcatgca agggctccct
+     1261 atctactgga gaatatacta agggtactgt tgacattgcg aagagcgaca aagattttgt
+     1321 tatcggcttt attgctcaaa gagacatggg tggaagagat gaaggttacg attggttgat
+     1381 tatgacaccc ggtgtgggtt tagatgacaa gggagacgca ttgggtcaac agtatagaac
+     1441 cgtggatgat gtggtctcta caggatctga cattattatt gttggaagag gactatttgc
+     1501 aaagggaagg gatgctaagg tagagggtga acgttacaga aaagcaggct gggaagcata
+     1561 tttgagaaga tgcggccagc aaaactaaat ttattggaga aagataacat atcatacttt
+     1621 cccccact
+//

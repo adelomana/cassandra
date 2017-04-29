@@ -2,3 +2,11 @@
 sequenceAnalysis/transcriptomics/pipeline.kallisto/figure.pca.png
 
 *.png
+
+*.pdf
+
+*.pyc
+
+conditionedFitness/pureCultures/messages.txt
+
+*.txt

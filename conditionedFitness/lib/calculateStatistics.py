@@ -19,6 +19,8 @@ def main(a,b):
     survival_mu_t=r_t_f
     survival_mu_nt=r_nt_f
 
+    print(survival_mu_t,survival_mu_nt)
+
     survival_var_t = numpy.mean(r_t_f**2)*numpy.mean(r_t_o**2) - (numpy.mean(r_t_f)**2)*(numpy.mean(r_t_o)**2)
     survival_var_nt = numpy.mean(r_nt_f**2)*numpy.mean(r_nt_o**2) - (numpy.mean(r_nt_f)**2)*(numpy.mean(r_nt_o)**2)
 

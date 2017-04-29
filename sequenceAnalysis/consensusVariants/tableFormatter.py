@@ -7,7 +7,7 @@ import breseqReader,GATKreader,varscanReader
 def annotationReader(sysName):
 
     '''
-    this function reads info about the gene, obtained from xx
+    this function reads info about the gene, obtained from http://www.rothsteinlab.com/tools/apps/orf_converter
     '''
 
     found=False

@@ -31,6 +31,8 @@ y = [cf_mu_0, cf_mu_50, cf_mu_190, cf_mu_300]
 z = [cf_sd_0, cf_sd_50, cf_sd_190, cf_sd_300]
 w = [pvalue_0, pvalue_50, pvalue_190, pvalue_300]
 
+print(y)
+
 matplotlib.pyplot.errorbar(x,y,yerr=z,fmt=':o',color='blue',ecolor='blue',markeredgecolor='blue',capsize=0,ms=thePointSize,mew=0)
 
 for i in range(len(w)):

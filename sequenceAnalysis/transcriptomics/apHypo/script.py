@@ -16,6 +16,36 @@ if it is the same in all 3 lines, that is the AP effect. Is that effect similar 
 3) checked if 2 is true in the caffeine+FOA, i.e., similar effect in the evolved but not the naive, is actually similar to the "resisntace" effect, i.e., the differential response to FOA in the evolved but not naive strain
 '''
 
+def annotationReader(sysName):
+
+    '''
+    this function reads info about the gene, obtained from http://www.rothsteinlab.com/tools/apps/orf_converter
+    '''
+
+    found=False
+
+    # reading annotation
+    infoFile='../../consensusVariants/annotation.2.txt'
+    with open(infoFile,'r') as f:
+        next(f)
+        for line in f:
+            vector=line.split('\t')
+            if vector[1] == sysName:
+                found=True
+                if vector[3] != '':
+                    geneName=vector[3]
+                else:
+                    geneName=sysName
+                geneFunction=vector[4].replace('\n','').split(';')[0]
+
+    # making sure annotation is retrieved
+    if found == False:
+        print('annotation not found for \t {}'.format(sysName))
+        geneName=''; geneFunction=''
+        sys.exit()
+
+    return geneName,geneFunction
+
 ### MAIN
 cuffdiffDir='/Volumes/omics4tb/alomana/projects/ap/data/transcriptomics/cuffdiff/'
 
@@ -44,8 +74,16 @@ for tube in tubes:
                 for line in f:
                     vector=line.split('\t')
                     if vector[-1] == 'yes\n':
+                        pvalue=vector[-3]
+                        log2fc=vector[-5]
                         geneName=vector[0].replace('gene:','')
                         caffeineEffect[tube][state][h].append(geneName)
+
+                        commonName,geneFunction=annotationReader(geneName)
+                        
+                        print(tube,'\t',state,'\t',h,'\t',geneName,'\t',commonName,'\t',geneFunction,'\t',log2fc,'\t',pvalue)
+
+
 # 1.2. defining consistent effect
 caffeineEffectIntersectNaive= list(set(caffeineEffect['l1']['naive']['h1']) & set(caffeineEffect['l2']['naive']['h1']) & set(caffeineEffect['l3']['naive']['h1']))
 caffeineEffectUnionNaive=list(set(caffeineEffect['l1']['naive']['h1']) | set(caffeineEffect['l2']['naive']['h1']) | set(caffeineEffect['l3']['naive']['h1']))
@@ -82,7 +120,11 @@ for tube in tubes:
     print(tube)
     DETs=caffeineEffect[tube]['naive']['h1']
     for DET in DETs:
-        print(DET)
+        if DET in caffeineEffectIntersectNaive:
+            core='yes'
+        else:
+            core='no'
+        print(DET,'\t',core)
         
 # 1.3. define caffeine effects in evolved lines and see how different they are to naive
 caffeineEffectIntersectEvolved= list(set(caffeineEffect['l1']['evolved']['h1']) & set(caffeineEffect['l2']['evolved']['h1']) & set(caffeineEffect['l3']['evolved']['h1']))
@@ -118,6 +160,17 @@ for element in caffeineEffectIntersectEvolved:
 caffeineEffectEvolvedSpecific=[element for element in caffeineEffectIntersectEvolved if element not in caffeineEffectIntersectNaive]
 print('caffeine effects evolved-specific (core): {}'.format(caffeineEffectEvolvedSpecific))
 
+print('novel DETs...')
+for tube in tubes:
+    print(tube)
+    DETs=caffeineEffect[tube]['evolved']['h1']
+    for DET in DETs:
+        if DET not in caffeineEffectUnionNaive:
+            core='yes'
+        else:
+            core='no'
+        print(DET,'\t',core)
+
 # 1.5. line by line, which are DETs not present in naive core?
 for tube in tubes:
     new=[element for element in caffeineEffect[tube]['evolved']['h1'] if element not in caffeineEffectUnionNaive]
@@ -125,6 +178,16 @@ for tube in tubes:
     for element in new:
         print(element)
 
+# 1.6 define line-specific new DETs
+for tube in tubes:
+    a=list(set(caffeineEffect[tube]['naive']['h1']))
+    b=list(set(caffeineEffect[tube]['evolved']['h1']))
+    c=list(set(a) & set(b))
+    uniqueNaive=[element for element in a if element not in b]
+    uniqueEvolved=[element for element in b if element not in a]
+
+    #print('tube {}: rank naive DETs {}, rank evolved DETs {}, rank intersect {}.'.format(tube,len(a),len(b),len(c)))
+    print('tube {}: rank unique naive DETs {}, rank unique evolved DETs {}, rank intersect {}.'.format(tube,len(uniqueNaive),len(uniqueEvolved),len(c)))
 
 
 
