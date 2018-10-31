@@ -51,21 +51,22 @@ for replicate in selected:
 # make the figure
 positions=list(generalTrend.keys())
 positions.sort()
-print(positions)
-sys.exit()
+fitnessValues=[]
+for position in positions:
+    fitnessValues.append(generalTrend[position])
+
+bp=matplotlib.pyplot.boxplot(fitnessValues,positions=positions,patch_artist=True,widths=20)
 
 # close figure
 matplotlib.pyplot.plot([0,300],[0,0],'--',color='black')
 
 matplotlib.pyplot.xlim([-25,325])
 matplotlib.pyplot.ylim([-0.44,0.44])
-matplotlib.pyplot.xticks([0,100,200,300])
+matplotlib.pyplot.xticks([0,100,200,300],[0,100,200,300])
 matplotlib.pyplot.yticks([-0.4,-0.2,0,0.2,0.4])
 matplotlib.pyplot.xlabel('Generation')
 matplotlib.pyplot.ylabel('Conditioned\nFitness')
-#matplotlib.pyplot.text(-20,0.3,'Sustained')
-matplotlib.pyplot.text(120,-0.38,'Sustained',color='red')
 
 matplotlib.pyplot.tight_layout(pad=0.5)
 
-matplotlib.pyplot.savefig('figure.sustained.pdf')
+matplotlib.pyplot.savefig('figure.all.pdf')

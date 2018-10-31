@@ -68,6 +68,7 @@ def tprint(value):
 
 # 0. user defined variables
 dataFile='/Users/alomana/gDrive2/projects/centers/ap/src/assessmentGraphs/evol4/APEE4 Colony Counts - pure cultures.csv'
+dataFile='/Users/adriandelomana/Google Drive/projects/centers/ap/src/assessmentGraphs/evol4/APEE4 Colony Counts - pure cultures.csv'
 
 # 1. reading the data
 tprint('reading data files')
