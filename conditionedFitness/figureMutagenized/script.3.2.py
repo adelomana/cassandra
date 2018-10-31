@@ -1,12 +1,15 @@
-import matplotlib,numpy,sys,scipy
+import matplotlib,numpy,sys,scipy,pickle
 import matplotlib.pyplot
-sys.path.append('/Users/alomana/gDrive2/projects/centers/ap/src/assessmentGraphs/publicationFigures/lib')
+sys.path.append('../lib')
 import calculateStatistics, dataReader3rdExperiment
 
 ### MAIN
 
 matplotlib.rcParams.update({'font.size':36,'font.family':'Times New Roman','xtick.labelsize':28,'ytick.labelsize':28})
 thePointSize=12
+
+jarDir='/Users/adriandelomana/scratch/'
+
 
 # mutagenized 3.2
 
@@ -36,6 +39,11 @@ y = [cf_mu_0, cf_mu_50, cf_mu_100, cf_mu_150, cf_mu_200, cf_mu_250, cf_mu_300]
 z = [cf_sd_0, cf_sd_50, cf_sd_100, cf_sd_150, cf_sd_200, cf_sd_250, cf_sd_300]
 w = [pvalue_0, pvalue_50, pvalue_100, pvalue_150, pvalue_200, pvalue_250, pvalue_300]
 
+x = [0, 50, 100, 150, 200]
+y = [cf_mu_0, cf_mu_50, cf_mu_100, cf_mu_150, cf_mu_200]
+z = [cf_sd_0, cf_sd_50, cf_sd_100, cf_sd_150, cf_sd_200]
+w = [pvalue_0, pvalue_50, pvalue_100, pvalue_150, pvalue_200]
+
 matplotlib.pyplot.errorbar(x,y,yerr=z,fmt=':o',color='red',ecolor='red',markeredgecolor='red',capsize=0,ms=thePointSize,mew=0)
 
 for i in range(len(w)):
@@ -61,3 +69,10 @@ matplotlib.pyplot.tight_layout(pad=0.5)
 
 matplotlib.pyplot.savefig('figure.mutagenized.3.2.pdf')
 matplotlib.pyplot.clf()
+
+# save processed data alternative plotting
+trajectory=[x,y,z]
+jarFile=jarDir+'mutagenized.3.2.pickle'
+f=open(jarFile,'wb')
+pickle.dump(trajectory,f)
+f.close()

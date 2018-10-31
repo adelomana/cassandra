@@ -2,7 +2,8 @@ import numpy
 
 def main(generation, label):
 
-    inputFile='/Users/alomana/gDrive2/projects/centers/ap/src/assessmentGraphs/evol3/data/colony counts APEE3 - generation %s.tsv'%str(generation)
+    #inputFile='/Users/adriandelomana/scratch/data/colony counts APEE3 - generation %s.tsv'%str(generation)
+    inputFile='/Users/adriandelomana/Google Drive/projects/centers/ap/src/assessmentGraphs/evol3/data/colony counts APEE3 - generation %s.tsv'%str(generation)
     with open(inputFile,'r') as f:
         lines=f.readlines()
         for line in lines:

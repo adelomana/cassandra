@@ -1,12 +1,15 @@
-import matplotlib,numpy,sys,scipy
+import matplotlib,numpy,sys,scipy,pickle
 import matplotlib.pyplot
-sys.path.append('/Users/alomana/gDrive2/projects/centers/ap/src/assessmentGraphs/publicationFigures/lib')
+sys.path.append('../lib')
 import calculateStatistics
 
 ### MAIN
 
 matplotlib.rcParams.update({'font.size':36,'font.family':'Times New Roman','xtick.labelsize':28,'ytick.labelsize':28})
 thePointSize=12
+
+jarDir='/Users/adriandelomana/scratch/'
+
 
 # engineered 2.3
 
@@ -69,3 +72,11 @@ matplotlib.pyplot.tight_layout(pad=0.5)
 
 matplotlib.pyplot.savefig('figure.engineered.2.3.pdf')
 matplotlib.pyplot.clf()
+
+# save processed data alternative plotting
+trajectory=[x,y,z]
+jarFile=jarDir+'engineered.2.3.pickle'
+f=open(jarFile,'wb')
+pickle.dump(trajectory,f)
+f.close()
+
