@@ -1,5 +1,6 @@
 import pickle,sys
 import statsmodels,statsmodels.api
+import scipy,scipy.stats
 import matplotlib,matplotlib.pyplot
 matplotlib.rcParams.update({'font.size':36,'font.family':'Arial','xtick.labelsize':28,'ytick.labelsize':28})
 thePointSize=12
@@ -70,3 +71,14 @@ matplotlib.pyplot.ylabel('Conditioned\nFitness')
 matplotlib.pyplot.tight_layout(pad=0.5)
 
 matplotlib.pyplot.savefig('figure.all.pdf')
+
+# checking significance
+reference=generalTrend[positions[0]]
+print(positions[0])
+for i in range(len(positions)-1):
+    selectedPosition=positions[i+1]
+    sample=generalTrend[selectedPosition]
+
+    statistic,pvalue=scipy.stats.mannwhitneyu(reference,sample)
+    print(selectedPosition,statistic,pvalue)
+    
