@@ -8,7 +8,7 @@ import calculateStatistics
 matplotlib.rcParams.update({'font.size':36,'font.family':'Times New Roman','xtick.labelsize':28,'ytick.labelsize':28})
 thePointSize=12
 
-jarDir='/Users/adriandelomana/scratch/'
+jarDir='/Users/alomana/scratch/'
 
 # engineered 1.3
 
